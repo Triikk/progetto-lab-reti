@@ -5,16 +5,16 @@ class Router:
     def __init__(self, name, ip_address):
         self.name = name
         self.address = ip_address
-        self.neighbors : dict = {}
+        self.neighbors = []
         self.paths : dict = {} # paths[router] = [gateway,distance]
-        self.received_paths = {}
+        self.received_paths = {} # buffer which stores the unprocessed paths received from other neighbors
 
     def add_neighbor(self, r : 'Router', d : int = 1):
         """
         Adds router r as neighbor with distance d.
         """
         assert(r != self)
-        self.neighbors[r] = [r,d]
+        self.neighbors.append(r)
         self.paths[r] = [r,d]
 
     def send(self):
@@ -22,7 +22,7 @@ class Router:
         Sends the path to all neighbors
         """
         for neighbor in self.neighbors:
-            neighbor.recv(self, {destination : route for destination,route in self.paths.items() if route[0] != neighbor and destination != neighbor})
+            neighbor.recv(self, {destination : route for destination,route in self.paths.items() if route[0] != neighbor and destination != neighbor}) # split horizon
 
     def recv(self, sender : 'Router', paths : dict):
         """
@@ -45,7 +45,8 @@ class Router:
                     current_distance = self.paths[destination][1] # current distance to destination
                     new_distance = distance_from_sender + distance # possible new distance
                     if current_distance > new_distance:
-                        gateway = self.paths[sender][0] # the gateway is not the actual sender (a neighbor) but the neighbor which allows me to reach the sender as fast as possible
+                        # the gateway is not the actual sender (a neighbor) but the neighbor which allows me to reach the sender as fast as possible
+                        gateway = self.paths[sender][0]
                         self.paths[destination] = [gateway,new_distance]
         self.received_paths = {}
 
