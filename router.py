@@ -26,7 +26,7 @@ class Router:
 
     def recv(self, sender : 'Router', paths : dict):
         """
-        Receives paths from neighbor `sender`.
+        Receives paths from neighbor sender.
         """
         assert(sender in self.neighbors)
         self.received_paths[sender] = paths
@@ -37,21 +37,21 @@ class Router:
         """
         for sender,paths in self.received_paths.items():
             for destination,route in paths.items():
-                gateway,distance = route
+                assert(destination != self)
+                neighbor_gateway,distance = route
                 distance_from_sender = self.paths[sender][1]
+                gateway = self.paths[sender][0] # the gateway is not necessarily the sender, but the neighbor which has the shortest path to the sender
+                new_distance = distance_from_sender + distance # possible new distance to destination
                 if destination not in self.paths: # unknown destination
-                    self.paths[destination] = [sender,distance_from_sender+distance]
+                    self.paths[destination] = [gateway,new_distance]
                 else:
                     current_distance = self.paths[destination][1] # current distance to destination
-                    new_distance = distance_from_sender + distance # possible new distance
                     if current_distance > new_distance:
-                        # the gateway is not the actual sender (a neighbor) but the neighbor which allows me to reach the sender as fast as possible
-                        gateway = self.paths[sender][0]
                         self.paths[destination] = [gateway,new_distance]
-        self.received_paths = {}
+        self.received_paths = {} # clear the buffer
 
     def __str__(self):
-        return self.name
+        return self.name + " (" + self.address + ")"
     
     def __repr__(self):
         return "<name=" + self.name + ",address=" + self.address + ">"
