@@ -1,3 +1,4 @@
+import argparse
 from router import Router
 
 def create_link(r1 : Router , r2 : Router, d : int = 1):
@@ -7,7 +8,22 @@ def create_link(r1 : Router , r2 : Router, d : int = 1):
     r1.add_neighbor(r2,d)
     r2.add_neighbor(r1,d)
 
+def get_help_message():
+    return "\n".join([
+        "round - get the current round",
+        "tables - print routing tables",
+        "routers - print routers",
+        "step - perform a simulation step",
+        "help - print this message",
+        "exit - stop the simulation",
+    ])
+
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--auto", help="perform simulation automatically", action="store_true", default=True)
+    parser.add_argument("--manual", help="perform simulation manually", action="store_true")
+    args = parser.parse_args()
+
     # r1 = Router("r1", "192.168.0.1")
     # r2 = Router("r2", "192.168.0.2")
     # r3 = Router("r3", "192.168.0.3")
@@ -51,20 +67,55 @@ if __name__ == "__main__":
     create_link(d,f,6)
     create_link(e,f,2)
 
-    for i in range(len(routers)):
-        print("="*50)
-        print("Round",i+1)
-        print("="*50)
-        for router in routers:
-            print("Routing table of router",router.name)
-            print("-"*50)
-            print("{:15s}{:15s}{:5s}".format("Destination","Gateway","Distance"))
-            for destination,route in sorted(router.paths.items(), key = lambda x : x[0].name): # sort on destination's alphanumerical order
-                gateway,distance = route
-                print("{:15s}{:15s}{:5d}".format(destination.name,gateway.name,distance))
-            print("-"*50)
-
-        for router in routers:
-            router.send()
-        for router in routers:
-            router.update()
+    if args.manual:
+        print("Welcome to the manual simulation of the Distance Vector routing protocol! These are the available commands:")
+        print(get_help_message())
+        
+        round = 1
+        while True:
+            command = input("> ").strip()
+            match command:
+                case "round":
+                    print("Round",round)
+                case "tables":
+                    for router in routers:
+                        print("Routing table of router",router.name)
+                        print("-"*50)
+                        print("{:15s}{:15s}{:5s}".format("Destination","Gateway","Distance"))
+                        for destination,route in sorted(router.paths.items(), key = lambda x : x[0].name): # sort on destination's alphanumerical order
+                            gateway,distance = route
+                            print("{:15s}{:15s}{:5d}".format(destination.name,gateway.name,distance))
+                        print("-"*50)
+                case "routers":
+                    for router in routers:
+                        print(router)
+                case "step":
+                    for router in routers:
+                        router.send()
+                    for router in routers:
+                        router.update()
+                    round += 1
+                case "help":
+                    print(get_help_message())
+                case "exit":
+                    exit()
+                case _:
+                    continue
+    else:
+        for round in range(len(routers)):
+            print("="*50)
+            print("Round",round+1)
+            print("="*50)
+            for router in routers:
+                print("Routing table of router",router.name)
+                print("-"*50)
+                print("{:15s}{:15s}{:5s}".format("Destination","Gateway","Distance"))
+                for destination,route in sorted(router.paths.items(), key = lambda x : x[0].name): # sort on destination's alphanumerical order
+                    gateway,distance = route
+                    print("{:15s}{:15s}{:5d}".format(destination.name,gateway.name,distance))
+                print("-"*50)
+                
+            for router in routers:
+                router.send()
+            for router in routers:
+                router.update()
