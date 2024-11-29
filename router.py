@@ -50,10 +50,10 @@ class Router:
         self.received_paths = {}
 
     def __str__(self):
-        return "<name=" + self.name + ",address=" + self.address + ">"
+        return self.name
     
     def __repr__(self):
-        return self.name
+        return "<name=" + self.name + ",address=" + self.address + ">"
 
     def __ne__(self, x):
         return self.name != x.name
