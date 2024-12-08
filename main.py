@@ -23,7 +23,8 @@ if __name__ == "__main__":
     parser.add_argument("--auto", help="perform simulation automatically", action="store_true", default=True)
     parser.add_argument("--manual", help="perform simulation manually", action="store_true")
     args = parser.parse_args()
-
+    
+    # configuration 1
     # r1 = Router("r1", "192.168.0.1")
     # r2 = Router("r2", "192.168.0.2")
     # r3 = Router("r3", "192.168.0.3")
@@ -36,6 +37,7 @@ if __name__ == "__main__":
     # create_link(r3,r4)
     # create_link(r4,r5)
 
+    # configuration 2
     # a = Router("a", "192.168.0.1")
     # b = Router("b", "192.168.0.2")
     # c = Router("c", "192.168.0.3")
@@ -50,6 +52,7 @@ if __name__ == "__main__":
     # create_link(d,b,1)
     # create_link(a,b,1)
 
+    # configuration 3
     a = Router("a", "192.168.0.1")
     b = Router("b", "192.168.0.2")
     c = Router("c", "192.168.0.3")
