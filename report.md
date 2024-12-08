@@ -45,7 +45,10 @@ I campi dei router sono così organizzati:
 - `received_paths`: buffer contenente le informazioni di routing ricevute ma non ancora processate; la struttura è la stessa di `paths`
 
 ## Main
-`main.py` contiene il codice per inizializzare i router e i loro collegamenti e per eseguire la simulazione vera e propria.
+`main.py` contiene il codice per inizializzare i router e i loro collegamenti e per eseguire la simulazione vera e propria. Si può lanciare con
+```console
+python main.py
+```
 
 ### Setup
 La parte di setup consiste nell'inizializzazione dei vari router e nella creazione dei collegamenti. La funzione `create_link()` si occupa di creare un collegamento (bidirezionale) tra due router con una certa distanza.
